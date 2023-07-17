@@ -12,4 +12,6 @@ const addSchema = Joi.object().keys({
   }),
 });
 
-module.exports = {addSchema}
+module.exports = {
+  addSchema,
+};

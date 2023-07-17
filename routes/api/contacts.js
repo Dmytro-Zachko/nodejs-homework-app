@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const ctrl = require("../../controllers/contacts")
-// const {validatebody, addSchema} =  require("../../validate")
-const validatebody = require('../../validate/ValidateBody')
-const addSchema = require("../../validate/ValidateSchema")
+const { validatebody } = require("../../validate")
+const addSchema = require("../../schemas/ValidateSchema")
+
 router.get('/', ctrl.getAll)
 
 router.get('/:id', ctrl.getById)
