@@ -1,17 +1,17 @@
 const express = require('express')
 const router = express.Router()
-const ctrl = require("../../controllers/contacts")
+const controller = require("../../controllers/contacts");
 const { validatebody } = require("../../validate")
-const addSchema = require("../../schemas/ValidateSchema")
+const Schema = require("../../schemas/ValidateSchema")
 
-router.get('/', ctrl.getAll)
+router.get("/", controller.getAll);
 
-router.get('/:id', ctrl.getById)
+router.get("/:contactId", controller.getById);
 
-router.post('/', validatebody(addSchema),ctrl.add)
+router.post("/", validatebody(Schema.addSchema), controller.add);
 
-router.delete('/:id', ctrl.deleteById)
+router.delete("/:contactId", controller.deleteById);
 
-router.put('/:id', validatebody(addSchema),ctrl.updateById)
+router.put("/:contactId", validatebody(Schema.addSchema), controller.updateById);
 
 module.exports = router
