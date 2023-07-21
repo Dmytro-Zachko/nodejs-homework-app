@@ -1,3 +1,3 @@
 const validatebody = require("../validate/ValidateBody")
-
-module.exports = { validatebody,}
+const validateFavorite = require('./ValidateFavorite')
+module.exports = { validatebody,validateFavorite}
