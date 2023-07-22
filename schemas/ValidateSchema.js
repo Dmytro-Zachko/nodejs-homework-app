@@ -10,9 +10,16 @@ const addSchema = Joi.object().keys({
   phone: Joi.string().required().messages({
     "any.required": "Field 'phone' is missing",
   }),
+  favorite: Joi.boolean().messages({
+    "any.required": "Field 'favourite' is missing",
+  }),
 });
 
+const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required()
+})
 
 module.exports = {
   addSchema,
+  updateFavoriteSchema
 };
