@@ -20,11 +20,7 @@ const contactSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'user',
       required: true
-  },
-  token: {
-    type: String,
-    default: " ",
-    }
+  }
 }, {versionKey: false, timestamps: true})
 
 contactSchema.post('save', handleMonggoseError)
