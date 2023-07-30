@@ -1,10 +1,11 @@
-const { Schema, model } = require("mongoose")
+const { Schema, model } = require("mongoose");
+const { handleMonggoseError } = require("../helpers");
 
-const {handleMonggoseError}  =require('../helpers')
-const contactSchema = new Schema({
-  name: {
+const contactSchema = new Schema(
+  {
+    name: {
       type: String,
-      required: [true, 'Set name for contact'],
+      required: [true, "Set name for contact"],
     },
     email: {
       type: String,
@@ -15,16 +16,15 @@ const contactSchema = new Schema({
     favorite: {
       type: Boolean,
       default: false,
-  },
+    },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: 'user',
-      required: true
-  }
-}, {versionKey: false, timestamps: true})
+      ref: "user",
+    },
+  },
+  { versionKey: false, timestamps: true }
+);
+contactSchema.post("save", handleMonggoseError);
 
-contactSchema.post('save', handleMonggoseError)
-
-const Contact = model("contact", contactSchema)
-
-module.exports = Contact
+const Contact = model("contact", contactSchema);
+module.exports = Contact;
