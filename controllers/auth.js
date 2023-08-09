@@ -2,7 +2,12 @@ const { User } = require('../models/users')
 const bcrypt = require("bcrypt")
 const { HttpError, ctrlWrapper } = require("../helpers")
 const jwt = require("jsonwebtoken")
-const {SECRET_KEY} = process.env
+const { SECRET_KEY } = process.env
+const gravatar = require('gravatar')
+const path = require('path')
+const fs = require('fs/promises')
+
+const avatarDir = path.join(__dirname, "../", "public", "avatars")
 
 const register = async (req, res) => {
     const { email,password } = req.body;
@@ -11,7 +16,8 @@ const register = async (req, res) => {
         throw HttpError(409, "Email in use")
     }
     const hashPassword = await bcrypt.hash(password,10)
-    const newUser = await User.create( {...req.body,password: hashPassword})
+  const avatarURL = gravatar.url(email);  
+  const newUser = await User.create({ ...req.body, password: hashPassword,avatarURL })
     res.status(201).json({
 user: {  email: newUser.email,
     subscription: "starter"}
@@ -68,10 +74,24 @@ const updateSubscription = async (req, res) => {
      message: `Your subscription has been updated to ${subscription}`
  })
 }
+
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: tempUpload, originalname } = req.file;
+  const resultUpload = path.join(avatarDir, originalname)
+  await fs.rename(tempUpload, resultUpload)
+  const avatarURL = path.join("avatars", originalname)
+  await User.findByIdAndUpdate(_id, { avatarURL })
+  
+  res.json({
+    avatarURL,
+  })
+}
 module.exports = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
     getCurrent: ctrlWrapper(getCurrent),
     logout: ctrlWrapper(logout),
-    updateSubscription: ctrlWrapper(updateSubscription)
+  updateSubscription: ctrlWrapper(updateSubscription),
+    updateAvatar: ctrlWrapper(updateAvatar)
 }
