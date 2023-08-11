@@ -15,6 +15,6 @@ router.post('/logout', authenticate, ctrl.logout)
 
 router.patch("/", authenticate, validatebody(Schema.subscriptionSchema),ctrl.updateSubscription)
 
-router.patch('/avatars', authenticate, ctrl.updateAvatar, upload.single('avatar'))
+router.patch('/avatars', authenticate, upload.single('avatar'),ctrl.updateAvatar)
 
 module.exports = router
