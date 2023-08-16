@@ -1,12 +1,13 @@
 const { User } = require('../models/users')
 const bcrypt = require("bcrypt")
-const { HttpError, ctrlWrapper } = require("../helpers")
+const { HttpError, ctrlWrapper,sendEmail } = require("../helpers")
 const jwt = require("jsonwebtoken")
-const { SECRET_KEY } = process.env
+const { SECRET_KEY,BASE_URL } = process.env
 const gravatar = require('gravatar')
 const path = require('path')
 const fs = require('fs/promises')
 const Jimp = require("jimp");
+const {nanoid} = require('nanoid')
 
 const avatarDir = path.join(__dirname, "../", "public", "avatars")
 
@@ -17,9 +18,17 @@ const register = async (req, res) => {
         throw HttpError(409, "Email in use")
     }
     const hashPassword = await bcrypt.hash(password,10)
-  const avatarURL = gravatar.url(email);  
-  const newUser = await User.create({ ...req.body, password: hashPassword,avatarURL })
-    res.status(201).json({
+  const avatarURL = gravatar.url(email);
+  const verificationToken = nanoid();
+  const newUser = await User.create({ ...req.body, password: hashPassword,avatarURL,verificationToken })
+  const verifyEmail = {
+    to: email,
+    subject: "verify Email",
+  html: `<a target= "_blank" href="${BASE_URL}/users/verify/${verificationToken}">Click to verify email</a>`,
+  }  
+  await sendEmail(verifyEmail)
+  
+  res.status(201).json({
 user: {  email: newUser.email,
     subscription: "starter"}
   })  

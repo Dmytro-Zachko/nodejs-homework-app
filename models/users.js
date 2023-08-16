@@ -23,7 +23,16 @@ const UserSchema = new Schema({
     type: String,
     required: true  
   },
-  token: String
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: {
+    type: String,
+    required: [true, 'Verify token is required'],
+  },
+
+  token: String,
 }, { versionKey: false, timestamps: true })
 
 UserSchema.post('save', handleMonggoseError)
