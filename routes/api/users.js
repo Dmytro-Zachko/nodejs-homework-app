@@ -7,6 +7,10 @@ const router = express.Router()
 
 router.post("/register", validatebody(Schema.registerSchema),ctrl.register )
 
+router.get("/verify/:verificationToken",ctrl.verifyEmail)
+
+router.post("/verify", validatebody(Schema.emailSchema), ctrl.resendVerify)
+
 router.post("/login", validatebody(Schema.registerSchema),ctrl.login)
 
 router.get("/current",  authenticate,ctrl.getCurrent)

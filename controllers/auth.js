@@ -34,12 +34,51 @@ user: {  email: newUser.email,
   })  
 }
 
+const verifyEmail = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await User.findOne({verificationToken})
+if (!user) {
+ throw HttpError(404, 'User not found'); 
+  }
+  await User.findByIdAndUpdate(user._id, {verify: true,verificationToken: null })
+
+  res.json({
+   message: 'Verification successful',
+})
+}
+
+const resendVerify = async (req, res) => {
+  const { email } = req.body
+   const user = await User.findOne({email})
+if (!user) {
+ throw HttpError(400, "Email not found"); 
+  }
+  if (user.verify) {
+    throw HttpError(400, "Verification has already been passed"); 
+  }
+   const verifyEmail = {
+    to: email,
+    subject: "verify Email",
+  html: `<a target= "_blank" href="${BASE_URL}/users/verify/${user.verificationToken}">Click to verify email</a>`,
+  } 
+  
+  await sendEmail(verifyEmail) 
+  
+    res.json({
+   message: "Verification email sent",
+})
+}
+
 const login = async (req, res) => {
      const { email, password } = req.body;
 
   const user = await User.findOne({ email });
   if (!user) {
     throw HttpError(401, "Email or password invalid");
+  }
+
+  if (!User.verify) {
+     throw HttpError(404, 'User not found');
   }
 
   const comparePassword = await bcrypt.compare(password, user.password);
@@ -114,5 +153,7 @@ module.exports = {
     getCurrent: ctrlWrapper(getCurrent),
     logout: ctrlWrapper(logout),
   updateSubscription: ctrlWrapper(updateSubscription),
-    updateAvatar: ctrlWrapper(updateAvatar)
+  updateAvatar: ctrlWrapper(updateAvatar),
+  verifyEmail: ctrlWrapper(verifyEmail),
+    resendVerify:ctrlWrapper(resendVerify)
 }

@@ -10,6 +10,9 @@ const transport = nodemailer.createTransport({
     user: "zaichkodmytro2004@meta.ua",
     pass: META_PASSWORD,
   },
+   tls: {
+        secureProtocol: "TLSv1_method"
+    }
 });
 
 const sendEmail = async (data) => {
