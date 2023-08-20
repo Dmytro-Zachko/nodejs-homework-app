@@ -9,6 +9,12 @@ const registerSchema = Joi.object().keys({
   })
 });
 
+const emailSchema = Joi.object().keys({
+  email: Joi.string().email().required().messages({
+    "any.required": "Missing field 'email'",
+  }),
+  });
+
 const subscriptionSchema = Joi.object({
   subscription: Joi.string()
     .valid("starter", "pro", "business")
@@ -21,5 +27,6 @@ const subscriptionSchema = Joi.object({
 
 module.exports = {
     registerSchema,
-    subscriptionSchema
+  subscriptionSchema,
+    emailSchema
 }
